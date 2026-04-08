@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 import jwt from 'jsonwebtoken'
-import { badRequest, created, notFound, ok } from '../respnses/respons.js'
+import { successResponse, errorResponse } from '../respnses/respons.js'
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRED_IN })
@@ -18,35 +18,40 @@ export const register = async (req, res) => {
 
     const token = generateToken(newUser._id);
 
-    created(res, newUser, 'the user has been created successfully');
+    successResponse(res, 201, { token, newUser }, 'the user has been created successfully');
 
   } catch (error) {
-    res.status(404).json({
-      status: 'fail',
-      message: error.message
-    });
+    console.error(error);
+    errorResponse(res, 500, 'Internal server error')
   };
 
 };
 
 export const login = async (req, res) => {
-  // 1) check the email and password if exist in body
-  const { email, password } = req.body
+  try {
+    // 1) check the email and password if exist in body
+    const { email, password } = req.body
 
-  if (!email || !password) {
-    return badRequest(res, 'Email and password are required')
-  };
+    if (!email || !password) {
+      return badRequest(res, 'Email and password are required')
+    };
 
-  // check user in database
-  const user = await User.findOne({ email }).select('+password');
+    // check user in database
+    const user = await User.findOne({ email }).select('+password');
 
-  const correct = await user.correctPassword(password, user.password);
+    const correct = await user.correctPassword(password, user.password);
 
-  if (!user || !correct) {
-    return notFound(res, 'incorrect email or password!')
-  };
+    if (!user || !correct) {
+      return notFound(res, 'incorrect email or password!')
+    };
 
-  const token = generateToken(user._id);
+    const token = generateToken(user._id);
 
-  ok(res, token);
+    successResponse(res, 200, { token }, 'you are logged-in successfully');
+
+  } catch (error) {
+    console.error(error);
+    errorResponse(res, 500, 'Internal server error')
+  }
+
 };
