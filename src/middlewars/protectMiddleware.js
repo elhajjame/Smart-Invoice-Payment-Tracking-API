@@ -3,16 +3,15 @@ import User from '../models/userModel.js';
 import { errorResponse } from '../respnses/respons.js';
 
 export const protect = async (req, res, next) => {
-
   let token, decoded;
-
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1]
-  }
-  if (!token) {
-    errorResponse(res, 401, 'you are not logged in! please log-in to get access')
-  };
   try {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1]
+    }
+    if (!token) {
+      errorResponse(res, 401, 'you are not logged in! please log-in to get access')
+    };
+
     decoded = jwt.verify(token, process.env.JWT_SECRET);
 
   } catch (error) {

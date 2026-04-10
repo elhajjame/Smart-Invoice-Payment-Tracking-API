@@ -4,15 +4,22 @@ import { errorResponse } from "../respnses/respons.js";
 
 export const supplierExist = async (req, res, next) => {
 
-  const { id } = req.params;
+  const { baseUrl } = req;
+  let supplierId;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    errorResponse(res, 400, 'invalid id');
+  if (baseUrl.includes("suppliers")) {
+    supplierId = req.params.id
+  } else if (baseUrl.includes("invoices")) {
+    supplierId = req.body.supplierId
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(supplierId)) {
+    return errorResponse(res, 400, 'invalid id');
   };
 
-  const project = await Supplier.findById(id,);
+  const supplier = await Supplier.findById(supplierId);
 
-  if (!project) {
+  if (!supplier) {
     return errorResponse(res, 404, 'supplier not found')
   }
   next();

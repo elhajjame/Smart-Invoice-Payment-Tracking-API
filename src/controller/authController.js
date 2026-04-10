@@ -55,3 +55,13 @@ export const login = async (req, res) => {
   }
 
 };
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    successResponse(res, 200, user)
+  } catch (error) {
+    console.error(error);
+    errorResponse(res, 500, 'Internal server error');
+  }
+}
