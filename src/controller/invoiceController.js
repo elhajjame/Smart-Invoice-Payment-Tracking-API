@@ -34,7 +34,7 @@ export const getInvoice = async (req, res) => {
     successResponse(res, 200, invoice)
   } catch (error) {
     console.error(error);
-    errorResponse(res, 500, 'Internal server error');
+    return errorResponse(res, 500, 'Internal server error');
   };
 };
 
@@ -49,7 +49,7 @@ export const getAllInvoices = async (req, res) => {
     successResponse(res, 200, { invoice });
   } catch (error) {
     console.error(error);
-    errorResponse(res, 500, 'Internal server error');
+    return errorResponse(res, 500, 'Internal server error');
   }
 };
 

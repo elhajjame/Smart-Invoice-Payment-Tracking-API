@@ -9,7 +9,7 @@ export const protect = async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1]
     }
     if (!token) {
-      errorResponse(res, 401, 'you are not logged in! please log-in to get access')
+      return errorResponse(res, 401, 'you are not logged in! please log-in to get access')
     };
 
     decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -22,7 +22,7 @@ export const protect = async (req, res, next) => {
   const freshUser = await User.findById(decoded.id);
 
   if (!freshUser) {
-    errorResponse(res, 401, 'the user belonging to token does no longer exist')
+    return errorResponse(res, 401, 'the user belonging to token does no longer exist')
   }
   req.user = freshUser;
   console.log(req.user);

@@ -1,6 +1,7 @@
 import Payment from "../models/paymentModel.js";
 import { errorResponse, successResponse } from "../respnses/respons.js";
 import Invoice from "../models/invoiceModel.js";
+
 export const makePayment = async (req, res) => {
   try {
     const { id } = req.params
@@ -39,5 +40,6 @@ export const listPayment = async (req, res) => {
 
   } catch (error) {
     console.log(error);
+    return errorResponse(res, 500, 'Internal server error');
   }
 }
