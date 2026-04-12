@@ -1,4 +1,5 @@
 import { body, validationResult } from 'express-validator';
+import { errorResponse } from '../respnses/respons.js';
 
 export const userValidation = [
   body("name").notEmpty().withMessage("The name is required"),
@@ -11,9 +12,5 @@ export const userValidation = [
     }
     return true;
   }),
-  body("role")
-    .isIn(["admin", "client"])
-    .withMessage(
-      "The role is required and must be either 'admin' or 'client'"
-    ),
 ];
+

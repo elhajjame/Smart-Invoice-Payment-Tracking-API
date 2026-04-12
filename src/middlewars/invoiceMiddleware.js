@@ -2,10 +2,35 @@ import Invoice from "../models/invoiceModel.js";
 import { errorResponse } from "../respnses/respons.js";
 import mongoose from "mongoose";
 
+import { body } from "express-validator";
+
+export const invoiceValidation = [
+  body("amount")
+    .notEmpty()
+    .withMessage("Amount is required")
+    .isFloat({ min: 0 })
+    .withMessage("Amount must be a positive number"),
+
+  body("paidAmount")
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Paid amount must be a positive number"),
+
+  body("description")
+    .optional()
+    .trim()
+  ,
+
+  body("supplierId")
+    .notEmpty()
+    .withMessage("Supplier ID is required")
+    .isMongoId()
+    .withMessage("Invalid supplier ID"),
+];
+
 export const invoiceExist = async (req, res, next) => {
 
   const { id } = req.params;
-
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return errorResponse(res, 400, 'invalid id');

@@ -65,10 +65,16 @@ export const getAllInvoices = async (req, res) => {
 
 export const updateInvoice = async (req, res) => {
   try {
-    const {
+
+    let {
       amount, description
     } = req.body
 
+    amount = Number(amount);
+
+    if (!amount || amount <= 0) {
+      return errorResponse(res, 400, 'invalid amount');
+    }
     const invoice = await Invoice.findByIdAndUpdate(req.params.id, req.body, { new: true })
     successResponse(res, 201, { invoice }, 'the supplier has been updated successfully');
 

@@ -53,8 +53,6 @@ invoiceSchema.pre("save", function () {
   } else if (this.paidAmount >= this.amount) {
     this.status = "paid";
   }
-
-
 });
 
 const Invoice = mongoose.model("Invoice", invoiceSchema);
