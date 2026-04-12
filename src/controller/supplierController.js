@@ -6,7 +6,7 @@ export const createSupplier = async (req, res) => {
     const {
       name, contact, email, phone, address
     } = req.body
-    console.log(name);
+
     const newSupplier = await Supplier.create({
       name, contact, email, phone, address,
       userId: req.user._id,
@@ -24,7 +24,7 @@ export const getSupplier = async (req, res) => {
   try {
     const { id } = req.params;
     const supplier = await Supplier.findOne({ _id: id, userId: req.user._id });
-    console.log(supplier);
+
     successResponse(res, 200, supplier)
   } catch (error) {
     console.error(error);
@@ -34,7 +34,13 @@ export const getSupplier = async (req, res) => {
 
 export const getAllSuppliers = async (req, res) => {
   try {
-    const suppliers = await Supplier.find({ userId: req.user._id });
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const suppliers = await Supplier.find({ userId: req.user._id })
+      .skip(skip)
+      .limit(limit)
     if (suppliers.length === 0) {
       return errorResponse(res, 404, 'cannot find any suppliers')
     };

@@ -1,22 +1,24 @@
 import Invoice from "../models/invoiceModel.js";
-import { errorResponse, successResponse } from "../respnses/respons";
+import { errorResponse, successResponse } from "../respnses/respons.js";
 
 export const supplierStats = async (req, res) => {
   try {
     const { id } = req.params;
     const invoice = await Invoice.find({
       supplierId: id,
-      UserId: req.user._id
+      userId: req.user._id
     })
+    console.log(invoice);
     let totalInvoices = invoice.length;
-    let totalAmount, totalPaid;
+    let totalAmount = 0
+    let totalPaid = 0;
 
     invoice.forEach(elm => {
       totalAmount = totalAmount + elm.amount;
       totalPaid += elm.paidAmount;
     });
-
-    const remaining = totalAmount - paidAmount;
+    console.log(totalAmount, totalPaid);
+    const remaining = totalAmount - totalPaid;
     const percentagePaid = (totalPaid / totalAmount)
     successResponse(res, 200, {
       totalInvoices,
@@ -35,7 +37,7 @@ export const supplierStats = async (req, res) => {
 export const dashboard = async (req, res) => {
   try {
     const invoices = await Invoice.find({
-      UserId: req.user._id
+      userId: req.user._id
     })
 
     let totalInvoices = invoices.length;

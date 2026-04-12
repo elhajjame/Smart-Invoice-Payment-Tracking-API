@@ -40,7 +40,17 @@ export const getInvoice = async (req, res) => {
 
 export const getAllInvoices = async (req, res) => {
   try {
-    const invoice = await Invoice.find({ userId: req.user._id });
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    let filter = { userId: req.user._id };
+    if (req.query.status) {
+      filter.status = req.query.status
+    }
+    const invoice = await Invoice.find(filter)
+      .skip(skip)
+      .limit(limit)
 
     if (invoice.length === 0) {
       return errorResponse(res, 404, 'cannot find any invoice')

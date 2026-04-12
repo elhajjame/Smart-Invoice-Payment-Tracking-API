@@ -6,5 +6,7 @@ import { dashboard, supplierStats } from "../controller/statsController.js";
 const router = Router();
 
 router
-  .get('/suppliers/stats/:id', protect, invoiceExist, supplierStats)
+  .get('/suppliers/stats/:id', protect, supplierStats)
   .get('/dashboard', protect, dashboard)
+
+export default router
